@@ -226,7 +226,7 @@ export default function Page() {
 
   return (
     <main className="min-h-screen bg-[#fbf4f1] px-0 py-0 text-[#0c0c0c] sm:px-6 sm:py-10 lg:px-8 lg:py-14">
-      <div className="mx-auto w-full max-w-[980px] rounded-none bg-white px-5 py-8 shadow-[0_1px_0_rgba(15,23,42,0.05)] sm:rounded-[40px] sm:px-10 sm:py-12 lg:px-12">
+      <div className="mx-auto w-full rounded-none bg-white px-5 py-8 shadow-[0_1px_0_rgba(15,23,42,0.05)] sm:rounded-[40px] sm:px-10 sm:py-12 lg:w-1/2 lg:px-12">
         <header className="mx-auto max-w-[840px]">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d6ff2]">
             Bree Loan Demo
@@ -255,7 +255,7 @@ export default function Page() {
               </p>
             </div>
 
-            <div className="mt-8 grid gap-3 text-left sm:grid-cols-2 lg:grid-cols-5">
+            <div className="mt-8 grid gap-3 text-left">
               {demoScenarios.map((scenario) => {
                 const isActive = scenario.id === selectedScenarioId;
 
