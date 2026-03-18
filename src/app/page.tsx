@@ -39,6 +39,11 @@ const demoScenarios = [
     title: "Missing documents",
     description: "No supporting documents submitted with the application.",
   },
+  {
+    id: "custom",
+    title: "Custom data",
+    description: "Start from a blank form and generate a fresh mock decision.",
+  },
 ] as const;
 
 const documentOptions = [
@@ -114,9 +119,23 @@ export default function Page() {
   const selectedScenario =
     demoScenarios.find((scenario) => scenario.id === selectedScenarioId) ??
     demoScenarios[0];
-  const seededApplication = getScenarioApplication(selectedScenario.id);
+  const seededApplication =
+    selectedScenario.id === "custom"
+      ? undefined
+      : getScenarioApplication(selectedScenario.id);
 
   function applyScenario(applicationId: string) {
+    if (applicationId === "custom") {
+      setSelectedScenarioId("custom");
+      setApplicantName("");
+      setEmail("");
+      setLoanAmount("");
+      setMonthlyIncome("");
+      setEmploymentStatus("employed");
+      setSelectedDocuments([]);
+      return;
+    }
+
     const application = getScenarioApplication(applicationId);
 
     if (!application) {
@@ -145,17 +164,14 @@ export default function Page() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!seededApplication) {
-      return;
-    }
-
-    const usesSeededScenario =
-      applicantName.trim() === seededApplication.applicant &&
-      email.trim() === seededApplication.email &&
-      Number(loanAmount || 0) === seededApplication.loanAmount &&
-      Number(monthlyIncome || 0) === seededApplication.statedMonthlyIncome &&
-      employmentStatus === seededApplication.employmentStatus &&
-      haveSameDocuments(selectedDocuments, seededApplication.documents);
+    const usesSeededScenario = seededApplication
+      ? applicantName.trim() === seededApplication.applicant &&
+        email.trim() === seededApplication.email &&
+        Number(loanAmount || 0) === seededApplication.loanAmount &&
+        Number(monthlyIncome || 0) === seededApplication.statedMonthlyIncome &&
+        employmentStatus === seededApplication.employmentStatus &&
+        haveSameDocuments(selectedDocuments, seededApplication.documents)
+      : false;
 
     if (usesSeededScenario) {
       startTransition(() => {
@@ -193,7 +209,7 @@ export default function Page() {
     });
   }
 
-  if (!seededApplication) {
+  if (!initialApplication) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#fbf4f1] px-6 py-16">
         <div className="w-full max-w-lg rounded-[36px] bg-white p-10 text-center shadow-[0_1px_0_rgba(15,23,42,0.06)]">
@@ -219,8 +235,8 @@ export default function Page() {
             Loan Application
           </h1>
           <p className="mt-5 text-base leading-8 text-[#6f6a67] sm:text-lg">
-            Use a seeded scenario to preview each loan decision state with a
-            clean, production-style frontend flow.
+            Explore the loan application experience using seeded demo cases or
+            enter custom details to generate a fresh mock decision.
           </p>
         </header>
 
@@ -231,16 +247,15 @@ export default function Page() {
                 Demo: Preseeded data
               </p>
               <h2 className="text-2xl font-semibold text-[#050505] sm:text-3xl">
-                Load one of the sample applications
+                Load a sample application or start fresh
               </h2>
               <p className="max-w-2xl text-base leading-7 text-[#6f6a67]">
-                Use these four demo paths to jump into the prepared applicant
-                outcomes. If you edit the form afterward, we will generate a
-                fresh mock decision from your custom inputs.
+                Use the four seeded demo paths to jump into prepared applicant
+                outcomes, or choose Custom data to start from a blank form.
               </p>
             </div>
 
-            <div className="mt-8 grid gap-3 text-left sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid gap-3 text-left sm:grid-cols-2 lg:grid-cols-5">
               {demoScenarios.map((scenario) => {
                 const isActive = scenario.id === selectedScenarioId;
 
