@@ -5,7 +5,12 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { applications } from "@/data/applications";
-import type { Application, EmploymentStatus } from "@/types/application";
+import {
+  buildCustomApplicationSearchParams,
+  buildMockApplication,
+  getApplicationRoute,
+} from "@/lib/mockDecision";
+import type { EmploymentStatus } from "@/types/application";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -72,36 +77,15 @@ function getScenarioApplication(id: string) {
   return applications.find((application) => application.id === id);
 }
 
-function getScenarioDestination(application: Application) {
-  if (application.extractionError === "no_documents_provided") {
-    return `/reupload/${application.id}`;
+function haveSameDocuments(left: string[], right: string[]) {
+  if (left.length !== right.length) {
+    return false;
   }
 
-  if (application.decision === "approved") {
-    return `/decision/approved/${application.id}`;
-  }
+  const leftSorted = [...left].sort();
+  const rightSorted = [...right].sort();
 
-  if (application.decision === "denied") {
-    return `/decision/denied/${application.id}`;
-  }
-
-  return `/decision/review/${application.id}`;
-}
-
-function getScenarioStatusCopy(application: Application) {
-  if (application.extractionError === "no_documents_provided") {
-    return "Document action needed";
-  }
-
-  if (application.decision === "approved") {
-    return "Decision ready";
-  }
-
-  if (application.decision === "denied") {
-    return "Decision ready";
-  }
-
-  return "Pending manual review";
+  return leftSorted.every((document, index) => document === rightSorted[index]);
 }
 
 export default function Page() {
@@ -165,8 +149,47 @@ export default function Page() {
       return;
     }
 
+    const usesSeededScenario =
+      applicantName.trim() === seededApplication.applicant &&
+      email.trim() === seededApplication.email &&
+      Number(loanAmount || 0) === seededApplication.loanAmount &&
+      Number(monthlyIncome || 0) === seededApplication.statedMonthlyIncome &&
+      employmentStatus === seededApplication.employmentStatus &&
+      haveSameDocuments(selectedDocuments, seededApplication.documents);
+
+    if (usesSeededScenario) {
+      startTransition(() => {
+        router.push(getApplicationRoute(seededApplication));
+      });
+
+      return;
+    }
+
+    const customApplication = buildMockApplication({
+      applicant: applicantName,
+      documents: selectedDocuments,
+      email,
+      employmentStatus,
+      id: "custom",
+      loanAmount: Number(loanAmount || 0),
+      statedMonthlyIncome: Number(monthlyIncome || 0),
+    });
+    const customSearch = buildCustomApplicationSearchParams({
+      applicant: applicantName,
+      documents: selectedDocuments,
+      email,
+      employmentStatus,
+      loanAmount: Number(loanAmount || 0),
+      statedMonthlyIncome: Number(monthlyIncome || 0),
+    });
+
     startTransition(() => {
-      router.push(getScenarioDestination(seededApplication));
+      router.push(
+        getApplicationRoute(customApplication, {
+          custom: true,
+          search: customSearch,
+        }),
+      );
     });
   }
 
@@ -202,31 +225,32 @@ export default function Page() {
         </header>
 
         <form className="mx-auto mt-10 max-w-[840px]" onSubmit={handleSubmit}>
-          <section className="pt-4">
+          <section className="rounded-[28px] border border-[#ece6e1] bg-[#fbf8f5] px-6 py-6">
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
-                Step 1
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1d6ff2]">
+                Demo: Preseeded data
               </p>
               <h2 className="text-2xl font-semibold text-[#050505] sm:text-3xl">
-                Applicant details
+                Load one of the sample applications
               </h2>
               <p className="max-w-2xl text-base leading-7 text-[#6f6a67]">
-                Select a demo path first, then review the prefilled application
-                details below.
+                Use these four demo paths to jump into the prepared applicant
+                outcomes. If you edit the form afterward, we will generate a
+                fresh mock decision from your custom inputs.
               </p>
             </div>
 
-            <div className="mt-8 grid gap-3 border-b border-[#ece6e1] pb-2 text-left sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-8 grid gap-3 text-left sm:grid-cols-2 lg:grid-cols-4">
               {demoScenarios.map((scenario) => {
                 const isActive = scenario.id === selectedScenarioId;
 
                 return (
                   <button
                     key={scenario.id}
-                    className={`border-b-[3px] px-1 pb-4 pt-1 text-left transition ${
+                    className={`rounded-[22px] border px-4 py-4 text-left transition ${
                       isActive
-                        ? "border-[#1d6ff2] text-[#1d6ff2]"
-                        : "border-transparent text-[#5f5a57] hover:border-[#cfdffc] hover:text-[#1d6ff2]"
+                        ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
+                        : "border-[#e7dfd8] bg-white text-[#5f5a57] hover:border-[#cfdffc] hover:text-[#1d6ff2]"
                     }`}
                     onClick={() => applyScenario(scenario.id)}
                     type="button"
@@ -240,6 +264,21 @@ export default function Page() {
                   </button>
                 );
               })}
+            </div>
+          </section>
+
+          <section className="pt-4">
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
+                Step 1
+              </p>
+              <h2 className="text-2xl font-semibold text-[#050505] sm:text-3xl">
+                Applicant details
+              </h2>
+              <p className="max-w-2xl text-base leading-7 text-[#6f6a67]">
+                Review the current application details below, or enter your own
+                custom information to generate a fresh mock decision.
+              </p>
             </div>
 
             <div className="mt-8 grid gap-6 md:grid-cols-2">
@@ -442,44 +481,6 @@ export default function Page() {
           </div>
         </section>
 
-        <section className="mx-auto mt-12 max-w-[840px] border-t border-[#ece6e1] pt-10">
-          <div className="flex items-end justify-between gap-6">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
-                Selected outcome
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold text-[#050505] sm:text-3xl">
-                {selectedScenario.title}
-              </h2>
-            </div>
-            <div className="hidden h-[3px] w-32 bg-[#1d6ff2] sm:block" />
-          </div>
-
-          <div className="mt-4 max-w-3xl text-base leading-7 text-[#6f6a67]">
-            {selectedScenario.description}
-          </div>
-
-          <div className="mt-8 divide-y divide-[#ece6e1] border-y border-[#ece6e1]">
-            <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
-              <p className="text-2xl font-medium text-[#98928d]">Status</p>
-              <p className="text-2xl font-medium text-[#050505]">
-                {getScenarioStatusCopy(seededApplication)}
-              </p>
-            </div>
-            <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
-              <p className="text-2xl font-medium text-[#98928d]">Route</p>
-              <p className="break-all text-2xl font-medium text-[#050505]">
-                {getScenarioDestination(seededApplication)}
-              </p>
-            </div>
-            <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
-              <p className="text-2xl font-medium text-[#98928d]">Mock score</p>
-              <p className="text-2xl font-medium text-[#050505]">
-                {seededApplication.score} / 100
-              </p>
-            </div>
-          </div>
-        </section>
       </div>
     </main>
   );
