@@ -6,7 +6,10 @@ import {
 } from "@/components/decision-page-frame";
 import { StatusTracker } from "@/components/status-tracker";
 import { getApplicationById } from "@/lib/getApplicationById";
-import { getCustomApplicationFromSearchParams } from "@/lib/mockDecision";
+import {
+  buildSearchStringFromRouteSearchParams,
+  getCustomApplicationFromSearchParams,
+} from "@/lib/mockDecision";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -43,6 +46,9 @@ export default async function Page({
 }: ReviewPageProps) {
   const { id } = await params;
   const resolvedSearchParams = await searchParams;
+  const preservedSearch = buildSearchStringFromRouteSearchParams(
+    resolvedSearchParams,
+  );
   const application =
     getApplicationById(id) ??
     getCustomApplicationFromSearchParams(resolvedSearchParams, id);
@@ -80,7 +86,7 @@ export default async function Page({
           <>
             <Link
               className={getDecisionButtonClasses("primary")}
-              href={`/reupload/${application.id}`}
+              href={`/reupload/${application.id}${preservedSearch}`}
             >
               Upload documents
             </Link>

@@ -259,6 +259,27 @@ export function buildCustomApplicationSearchParams(
   return params.toString();
 }
 
+export function buildSearchStringFromRouteSearchParams(
+  searchParams: RouteSearchParams,
+) {
+  const params = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (Array.isArray(value)) {
+      value.forEach((item) => params.append(key, item));
+      continue;
+    }
+
+    if (value !== undefined) {
+      params.set(key, value);
+    }
+  }
+
+  const search = params.toString();
+
+  return search ? `?${search}` : "";
+}
+
 export function getApplicationRoute(
   application: Application,
   options?: {
