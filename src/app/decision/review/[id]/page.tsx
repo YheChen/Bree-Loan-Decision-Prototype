@@ -1,3 +1,3 @@
-export default function ReviewDecisionPage() {
-  return <main>Decision review page</main>;
+export default function Page() {
+  return <div>Review Page</div>;
 }

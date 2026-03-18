@@ -1,3 +1,3 @@
-export default function AdminReviewsPage() {
-  return <main>Admin reviews page</main>;
+export default function Page() {
+  return <div>Admin Reviews Page</div>;
 }

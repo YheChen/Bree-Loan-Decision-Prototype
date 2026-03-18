@@ -1,3 +1,3 @@
-export default function ApprovedDecisionPage() {
-  return <main>Approved decision page</main>;
+export default function Page() {
+  return <div>Approved Page</div>;
 }

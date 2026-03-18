@@ -1,3 +1,3 @@
-export default function ReuploadPage() {
-  return <main>Reupload page</main>;
+export default function Page() {
+  return <div>Reupload Page</div>;
 }

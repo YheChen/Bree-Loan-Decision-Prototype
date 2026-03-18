@@ -1,3 +1,3 @@
-export default function DeniedDecisionPage() {
-  return <main>Denied decision page</main>;
+export default function Page() {
+  return <div>Denied Page</div>;
 }
