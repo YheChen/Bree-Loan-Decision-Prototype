@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { FormEvent } from "react";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -110,8 +111,9 @@ export default function Page() {
   const [monthlyIncome, setMonthlyIncome] = useState(
     String(initialApplication?.statedMonthlyIncome ?? ""),
   );
-  const [employmentStatus, setEmploymentStatus] =
-    useState<EmploymentStatus>(initialApplication?.employmentStatus ?? "employed");
+  const [employmentStatus, setEmploymentStatus] = useState<EmploymentStatus>(
+    initialApplication?.employmentStatus ?? "employed",
+  );
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>(
     initialApplication?.documents ?? [],
   );
@@ -310,7 +312,9 @@ export default function Page() {
               </label>
 
               <label className="block">
-                <span className="text-sm font-medium text-[#8a847f]">Email</span>
+                <span className="text-sm font-medium text-[#8a847f]">
+                  Email
+                </span>
                 <input
                   className="mt-3 w-full rounded-[20px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base text-[#050505] outline-none transition focus:border-[#1d6ff2]"
                   onChange={(event) => setEmail(event.target.value)}
@@ -400,7 +404,7 @@ export default function Page() {
                 return (
                   <button
                     key={document.fileName}
-                    className="grid w-full gap-4 py-5 text-left transition hover:bg-[#fbf8f5] sm:grid-cols-[1fr_auto]"
+                    className="grid w-full gap-4 px-6 py-5 text-left transition hover:bg-[#fbf8f5] sm:grid-cols-[1fr_auto]"
                     onClick={() => toggleDocument(document.fileName)}
                     type="button"
                   >
@@ -430,6 +434,56 @@ export default function Page() {
                 );
               })}
             </div>
+          </section>
+
+          <section className="mx-auto mt-12 max-w-[840px] border-t border-[#ece6e1] pt-10">
+            <div className="flex items-end justify-between gap-6">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
+                  Before you submit
+                </p>
+                <h2 className="mt-2 text-xl font-semibold text-[#050505] sm:text-2xl">
+                  Review applicant information
+                </h2>
+              </div>
+            </div>
+
+            <div className="mt-8 divide-y divide-[#ece6e1] border-y border-[#ece6e1]">
+              <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
+                <p className="text-xl font-medium text-[#98928d]">Name</p>
+                <p className="text-xl font-medium text-[#050505]">
+                  {applicantName}
+                </p>
+              </div>
+              <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
+                <p className="text-xl font-medium text-[#98928d]">Email</p>
+                <p className="text-xl font-medium text-[#050505]">{email}</p>
+              </div>
+              <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
+                <p className="text-xl font-medium text-[#98928d]">
+                  Loan amount
+                </p>
+                <p className="text-xl font-medium text-[#050505]">
+                  {formatCurrency(Number(loanAmount || 0))}
+                </p>
+              </div>
+              <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
+                <p className="text-xl font-medium text-[#98928d]">
+                  Monthly income
+                </p>
+                <p className="text-xl font-medium text-[#050505]">
+                  {formatCurrency(Number(monthlyIncome || 0))}
+                </p>
+              </div>
+              <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
+                <p className="text-xl font-medium text-[#98928d]">
+                  Employment status
+                </p>
+                <p className="text-xl font-medium capitalize text-[#050505]">
+                  {employmentStatus}
+                </p>
+              </div>
+            </div>
 
             <div className="my-12 flex justify-center">
               <button
@@ -442,55 +496,25 @@ export default function Page() {
             </div>
           </section>
         </form>
+      </div>
 
-        <section className="mx-auto max-w-[840px] border-t border-[#ece6e1] pt-10">
-          <div className="flex items-end justify-between gap-6">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
-                Application snapshot
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold text-[#050505] sm:text-3xl">
-                Current applicant info
-              </h2>
-            </div>
-          </div>
-
-          <div className="mt-8 divide-y divide-[#ece6e1] border-y border-[#ece6e1]">
-            <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
-              <p className="text-2xl font-medium text-[#98928d]">Applicant</p>
-              <p className="text-2xl font-medium text-[#050505]">
-                {applicantName}
-              </p>
-            </div>
-            <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
-              <p className="text-2xl font-medium text-[#98928d]">Email</p>
-              <p className="text-2xl font-medium text-[#050505]">{email}</p>
-            </div>
-            <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
-              <p className="text-2xl font-medium text-[#98928d]">Loan amount</p>
-              <p className="text-2xl font-medium text-[#050505]">
-                {formatCurrency(Number(loanAmount || 0))}
-              </p>
-            </div>
-            <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
-              <p className="text-2xl font-medium text-[#98928d]">
-                Monthly income
-              </p>
-              <p className="text-2xl font-medium text-[#050505]">
-                {formatCurrency(Number(monthlyIncome || 0))}
-              </p>
-            </div>
-            <div className="grid gap-3 py-5 sm:grid-cols-[220px_1fr]">
-              <p className="text-2xl font-medium text-[#98928d]">
-                Employment status
-              </p>
-              <p className="text-2xl font-medium capitalize text-[#050505]">
-                {employmentStatus}
-              </p>
-            </div>
+      <div className="mx-auto mt-6 w-full rounded-none bg-white px-5 py-8 shadow-[0_1px_0_rgba(15,23,42,0.05)] sm:rounded-[40px] sm:px-10 sm:py-12 lg:w-1/2 lg:px-12">
+        <section className="mx-auto max-w-[840px]">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
+            Demo only
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold text-[#050505] sm:text-3xl">
+            Admin View
+          </h2>
+          <div className="mt-6 flex justify-center">
+            <Link
+              className="inline-flex items-center justify-center rounded-[18px] border border-[#e7dfd8] bg-[#fbf8f5] px-6 py-3 text-base font-medium text-[#050505] transition hover:bg-[#f4efeb]"
+              href="/admin/reviews"
+            >
+              View admin dashboard
+            </Link>
           </div>
         </section>
-
       </div>
     </main>
   );
