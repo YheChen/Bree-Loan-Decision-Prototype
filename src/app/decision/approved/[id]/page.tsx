@@ -108,17 +108,9 @@ export default async function Page({
   return (
     <DecisionPageFrame
       actions={
-        <>
-          <Link className={getDecisionButtonClasses("primary")} href="/">
-            Start a new application
-          </Link>
-          <Link
-            className={getDecisionButtonClasses("secondary")}
-            href="/admin/reviews"
-          >
-            Open review dashboard
-          </Link>
-        </>
+        <Link className={getDecisionButtonClasses("primary")} href="/">
+          Start a new application
+        </Link>
       }
       description={`Good news, ${application.applicant}. We reviewed your application and can move forward with your loan request. Your next step is to review the final offer details we send to ${application.email}.`}
       eyebrow="Decision ready"

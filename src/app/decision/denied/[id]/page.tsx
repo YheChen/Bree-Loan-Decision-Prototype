@@ -96,17 +96,9 @@ export default async function Page({
   return (
     <DecisionPageFrame
       actions={
-        <>
-          <Link className={getDecisionButtonClasses("primary")} href="/">
-            Start a new application
-          </Link>
-          <a
-            className={getDecisionButtonClasses("secondary")}
-            href="mailto:support@bree.app"
-          >
-            Contact support
-          </a>
-        </>
+        <Link className={getDecisionButtonClasses("primary")} href="/">
+          Start a new application
+        </Link>
       }
       description={`We’re sorry, ${application.applicant}. We’re unable to approve this application right now. We’ll send a follow-up email to ${application.email} with the formal notice and information about next steps available to you.`}
       eyebrow="Decision ready"

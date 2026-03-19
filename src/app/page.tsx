@@ -432,10 +432,6 @@ export default function Page() {
             </div>
 
             <div className="mt-12 flex flex-col items-center gap-5 pt-4">
-              <p className="max-w-2xl text-center text-base leading-7 text-[#6f6a67]">
-                Submit routes this mock application to the prepared outcome page
-                for the selected scenario.
-              </p>
               <button
                 className="inline-flex min-w-[280px] items-center justify-center rounded-[20px] border-2 border-black bg-[#1d6ff2] px-8 py-4 text-xl font-medium text-white shadow-[10px_10px_0_#050505] transition hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[8px_8px_0_#050505] disabled:translate-x-0 disabled:translate-y-0 disabled:border-[#9bbef9] disabled:bg-[#9bbef9] disabled:shadow-none"
                 disabled={isPending}
