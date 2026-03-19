@@ -44,7 +44,7 @@ function formatCurrency(value: number) {
 
 function getFocusLabel(application: Application) {
   if (application.extractionError === "no_documents_provided") {
-    return "Needs documents";
+    return "Waiting on documents";
   }
 
   if (application.score >= 65) {
@@ -58,7 +58,10 @@ function getFocusLabel(application: Application) {
   return "Mixed risk signals";
 }
 
-function getActionLabel(action: ReviewerAction | undefined) {
+function getActionLabel(
+  action: ReviewerAction | undefined,
+  application?: Application,
+) {
   if (action === "approve") {
     return "Marked approved";
   }
@@ -71,10 +74,17 @@ function getActionLabel(action: ReviewerAction | undefined) {
     return "Documents requested";
   }
 
+  if (application?.extractionError === "no_documents_provided") {
+    return "Waiting on applicant";
+  }
+
   return "Awaiting reviewer action";
 }
 
-function getActionTone(action: ReviewerAction | undefined) {
+function getActionTone(
+  action: ReviewerAction | undefined,
+  application?: Application,
+) {
   if (action === "approve") {
     return "border-[#dcebdd] bg-[#f4fbf5] text-[#45664a]";
   }
@@ -84,6 +94,10 @@ function getActionTone(action: ReviewerAction | undefined) {
   }
 
   if (action === "request_documents") {
+    return "border-[#eadfcd] bg-[#f8f1e8] text-[#7f674f]";
+  }
+
+  if (application?.extractionError === "no_documents_provided") {
     return "border-[#eadfcd] bg-[#f8f1e8] text-[#7f674f]";
   }
 
@@ -216,8 +230,6 @@ export default function Page() {
     (application) => application.extractionError === "no_documents_provided",
   ).length;
   const readyForReviewCount = flaggedApplications.length - needsDocumentsCount;
-  const actionedCount = Object.values(actionsById).filter(Boolean).length;
-
   function updateNotes(value: string) {
     setNotesById((currentNotes) => ({
       ...currentNotes,
@@ -279,9 +291,9 @@ export default function Page() {
                 value={readyForReviewCount}
               />
               <SummaryCard
-                description="Local-only decisions recorded during this session."
-                title="Actioned in demo"
-                value={actionedCount}
+                description="These files should move to re-upload before deeper manual review."
+                title="Waiting on applicant"
+                value={needsDocumentsCount}
               />
             </div>
           </section>
@@ -295,6 +307,10 @@ export default function Page() {
                 <h2 className="mt-2 text-2xl font-semibold text-[#050505]">
                   Applications needing attention
                 </h2>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-[#6f6a67]">
+                  Includes both review-ready files and applicant-action holds
+                  so the demo can show the full flagged workflow in one place.
+                </p>
               </div>
               <span className="rounded-full border border-[#ece6e1] bg-[#fbf8f5] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#8a847f]">
                 {flaggedApplications.length} open
@@ -364,7 +380,7 @@ export default function Page() {
                       </div>
 
                       <p className="mt-4 text-xs uppercase tracking-[0.14em] text-[#8a847f]">
-                        {getActionLabel(action)}
+                        {getActionLabel(action, application)}
                       </p>
                     </button>
                   );
@@ -398,9 +414,9 @@ export default function Page() {
               </div>
 
               <div
-                className={`rounded-full border px-4 py-2 text-sm font-semibold ${getActionTone(selectedAction)}`}
+                className={`rounded-full border px-4 py-2 text-sm font-semibold ${getActionTone(selectedAction, selectedApplication)}`}
               >
-                {getActionLabel(selectedAction)}
+                {getActionLabel(selectedAction, selectedApplication)}
               </div>
             </div>
 
@@ -431,10 +447,10 @@ export default function Page() {
             {extractionCopy ? (
               <div className="mt-6 rounded-[22px] border border-[#f0dfd7] bg-[#fff7f2] px-5 py-5">
                 <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#8e5c4d]">
-                  Extraction issue
+                  Applicant action needed
                 </p>
                 <p className="mt-3 text-lg font-semibold text-[#050505]">
-                  Documents missing
+                  Waiting on documents
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[#6f6a67]">
                   {extractionCopy}
@@ -448,8 +464,8 @@ export default function Page() {
                   No documents submitted
                 </p>
                 <p className="mt-2 text-sm leading-6 text-[#6f6a67]">
-                  This file should usually move straight to a document request,
-                  not a deeper review.
+                  In production, this would usually move into a separate
+                  applicant-action bucket until the missing files are uploaded.
                 </p>
               </div>
             ) : (
