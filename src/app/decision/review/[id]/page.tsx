@@ -154,17 +154,9 @@ export default async function Page({
   return (
     <DecisionPageFrame
       actions={
-        <>
-          <Link className={getDecisionButtonClasses("primary")} href="/">
-            Return home
-          </Link>
-          <Link
-            className={getDecisionButtonClasses("secondary")}
-            href="/admin/reviews"
-          >
-            Open review dashboard
-          </Link>
-        </>
+        <Link className={getDecisionButtonClasses("primary")} href="/">
+          Return home
+        </Link>
       }
       description={`Thanks, ${application.applicant}. We received your application and supporting documents. A reviewer is taking a final look before we make a decision, and we’ll email ${application.email} as soon as the review is complete.`}
       eyebrow="Under review"

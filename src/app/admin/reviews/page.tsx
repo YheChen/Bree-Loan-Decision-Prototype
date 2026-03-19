@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 import { getFlaggedApplications } from "@/lib/getFlaggedApplications";
@@ -193,7 +193,6 @@ function DetailRow({
 }
 
 export default function Page() {
-  const queueScrollRef = useRef<HTMLDivElement>(null);
   const [selectedId, setSelectedId] = useState(
     flaggedApplications[0]?.id ?? "",
   );
@@ -244,13 +243,6 @@ export default function Page() {
     }));
   }
 
-  function scrollQueue(direction: "left" | "right") {
-    queueScrollRef.current?.scrollBy({
-      left: direction === "left" ? -320 : 320,
-      behavior: "smooth",
-    });
-  }
-
   return (
     <main className="min-h-screen bg-[#fbf4f1] px-0 py-0 text-[#0c0c0c] sm:px-6 sm:py-10 lg:px-8 lg:py-14">
       <div className="mx-auto w-full rounded-none bg-white px-5 py-8 shadow-[0_1px_0_rgba(15,23,42,0.05)] sm:rounded-[40px] sm:px-10 sm:py-12 lg:w-1/2 lg:px-12">
@@ -299,35 +291,24 @@ export default function Page() {
           </section>
 
           <section className="mt-10 rounded-[32px] border border-[#ece6e1] bg-white px-6 py-6">
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
-                  Review queue
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold text-[#050505]">
-                  Applications needing attention
-                </h2>
-                <p className="mt-3 max-w-3xl text-sm leading-6 text-[#6f6a67]">
-                  Includes both review-ready files and applicant-action holds
-                  so the demo can show the full flagged workflow in one place.
-                </p>
-              </div>
-              <span className="rounded-full border border-[#ece6e1] bg-[#fbf8f5] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#8a847f]">
+            <div className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-start">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
+                Review queue
+              </p>
+              <h2 className="text-2xl font-semibold text-[#050505] sm:col-start-1">
+                Applications needing attention
+              </h2>
+              <p className="max-w-3xl text-sm leading-6 text-[#6f6a67] sm:col-start-1">
+                Includes both review-ready files and applicant-action holds so
+                the demo can show the full flagged workflow in one place.
+              </p>
+              <span className="self-start rounded-full border border-[#ece6e1] bg-[#fbf8f5] px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#8a847f] sm:col-start-2 sm:row-start-1">
                 {flaggedApplications.length} open
               </span>
             </div>
 
-            <div className="mt-6 flex items-center gap-3">
-              <button
-                aria-label="Scroll review queue left"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7dfd8] bg-[#fbf8f5] text-base font-semibold text-[#050505] transition hover:bg-[#f4efeb]"
-                onClick={() => scrollQueue("left")}
-                type="button"
-              >
-                &lt;
-              </button>
-
-              <div className="overflow-x-auto pb-2" ref={queueScrollRef}>
+            <div className="mt-6">
+              <div className="overflow-x-auto pb-2">
                 <div className="flex min-w-max gap-3">
                 {flaggedApplications.map((application) => {
                   const isSelected = application.id === selectedApplication.id;
@@ -387,15 +368,6 @@ export default function Page() {
                 })}
                 </div>
               </div>
-
-              <button
-                aria-label="Scroll review queue right"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7dfd8] bg-[#fbf8f5] text-base font-semibold text-[#050505] transition hover:bg-[#f4efeb]"
-                onClick={() => scrollQueue("right")}
-                type="button"
-              >
-                &gt;
-              </button>
             </div>
           </section>
 
