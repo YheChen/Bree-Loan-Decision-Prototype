@@ -224,22 +224,24 @@ export default function Page() {
 
   const selectedAction = actionsById[selectedApplication.id];
   const selectedNote = notesById[selectedApplication.id] ?? "";
+  const selectedApplicationId = selectedApplication.id;
   const extractionCopy = getExtractionCopy(selectedApplication.extractionError);
   const needsDocumentsCount = flaggedApplications.filter(
     (application) => application.extractionError === "no_documents_provided",
   ).length;
   const readyForReviewCount = flaggedApplications.length - needsDocumentsCount;
+
   function updateNotes(value: string) {
     setNotesById((currentNotes) => ({
       ...currentNotes,
-      [selectedApplication.id]: value,
+      [selectedApplicationId]: value,
     }));
   }
 
   function setReviewerAction(action: ReviewerAction) {
     setActionsById((currentActions) => ({
       ...currentActions,
-      [selectedApplication.id]: action,
+      [selectedApplicationId]: action,
     }));
   }
 
@@ -310,62 +312,63 @@ export default function Page() {
             <div className="mt-6">
               <div className="overflow-x-auto pb-2">
                 <div className="flex min-w-max gap-3">
-                {flaggedApplications.map((application) => {
-                  const isSelected = application.id === selectedApplication.id;
-                  const action = actionsById[application.id];
+                  {flaggedApplications.map((application) => {
+                    const isSelected = application.id === selectedApplication.id;
+                    const action = actionsById[application.id];
 
-                  return (
-                    <button
-                      className={`w-[280px] shrink-0 rounded-[22px] border px-4 py-4 text-left transition ${
-                        isSelected
-                          ? "border-[#1d6ff2] bg-white text-[#1d6ff2] shadow-[0_1px_0_rgba(15,23,42,0.04)]"
-                          : "border-[#ece6e1] bg-white hover:border-[#cfdffc] hover:bg-[#fbf8f5]"
-                      }`}
-                      key={application.id}
-                      onClick={() => setSelectedId(application.id)}
-                      type="button"
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="text-base font-semibold text-[#050505]">
-                            {application.applicant}
-                          </p>
-                          <p className="mt-1 text-sm text-[#6f6a67]">
-                            {formatCurrency(application.loanAmount)} requested
-                          </p>
+                    return (
+                      <button
+                        aria-pressed={isSelected}
+                        className={`w-[280px] shrink-0 rounded-[22px] border px-4 py-4 text-left transition ${
+                          isSelected
+                            ? "border-[#1d6ff2] bg-white text-[#1d6ff2] shadow-[0_1px_0_rgba(15,23,42,0.04)]"
+                            : "border-[#ece6e1] bg-white hover:border-[#cfdffc] hover:bg-[#fbf8f5]"
+                        }`}
+                        key={application.id}
+                        onClick={() => setSelectedId(application.id)}
+                        type="button"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-base font-semibold text-[#050505]">
+                              {application.applicant}
+                            </p>
+                            <p className="mt-1 text-sm text-[#6f6a67]">
+                              {formatCurrency(application.loanAmount)} requested
+                            </p>
+                          </div>
+                          <span
+                            className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${
+                              isSelected
+                                ? "border-[#d7e6ff] bg-[#f3f8ff] text-[#1d6ff2]"
+                                : "border-[#ece6e1] bg-white text-[#6f6a67]"
+                            }`}
+                          >
+                            Score {application.score}
+                          </span>
                         </div>
-                        <span
-                          className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${
-                            isSelected
-                              ? "border-[#d7e6ff] bg-[#f3f8ff] text-[#1d6ff2]"
-                              : "border-[#ece6e1] bg-white text-[#6f6a67]"
-                          }`}
-                        >
-                          Score {application.score}
-                        </span>
-                      </div>
 
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <span
-                          className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] ${
-                            isSelected
-                              ? "border-[#d7e6ff] bg-[#f3f8ff] text-[#1d6ff2]"
-                              : "border-[#ece6e1] bg-white text-[#6f6a67]"
-                          }`}
-                        >
-                          {getFocusLabel(application)}
-                        </span>
-                        <span className="rounded-full border border-[#ece6e1] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#8a847f]">
-                          {application.id}
-                        </span>
-                      </div>
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          <span
+                            className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] ${
+                              isSelected
+                                ? "border-[#d7e6ff] bg-[#f3f8ff] text-[#1d6ff2]"
+                                : "border-[#ece6e1] bg-white text-[#6f6a67]"
+                            }`}
+                          >
+                            {getFocusLabel(application)}
+                          </span>
+                          <span className="rounded-full border border-[#ece6e1] bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#8a847f]">
+                            {application.id}
+                          </span>
+                        </div>
 
-                      <p className="mt-4 text-xs uppercase tracking-[0.14em] text-[#8a847f]">
-                        {getActionLabel(action, application)}
-                      </p>
-                    </button>
-                  );
-                })}
+                        <p className="mt-4 text-xs uppercase tracking-[0.14em] text-[#8a847f]">
+                          {getActionLabel(action, application)}
+                        </p>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -511,12 +514,16 @@ export default function Page() {
               reviewers preserve context without slowing down the queue.
             </p>
 
-            <textarea
-              className="mt-6 min-h-[180px] w-full rounded-[24px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base leading-7 text-[#050505] outline-none transition focus:border-[#1d6ff2]"
-              onChange={(event) => updateNotes(event.target.value)}
-              placeholder="Add reviewer context, follow-up items, or the rationale for your decision."
-              value={selectedNote}
-            />
+            <label className="mt-6 block" htmlFor="reviewer-notes">
+              <span className="sr-only">Reviewer notes</span>
+              <textarea
+                className="min-h-[180px] w-full rounded-[24px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base leading-7 text-[#050505] outline-none transition focus:border-[#1d6ff2]"
+                id="reviewer-notes"
+                onChange={(event) => updateNotes(event.target.value)}
+                placeholder="Add reviewer context, follow-up items, or the rationale for your decision."
+                value={selectedNote}
+              />
+            </label>
 
             <div className="mt-4 flex flex-col gap-3 text-sm text-[#6f6a67] sm:flex-row sm:items-center sm:justify-between">
               <p>Saved locally for demo purposes.</p>
@@ -533,6 +540,7 @@ export default function Page() {
 
               <div className="mt-6 grid gap-3 md:grid-cols-3">
                 <button
+                  aria-pressed={selectedAction === "approve"}
                   className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
                     selectedAction === "approve"
                       ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
@@ -544,6 +552,7 @@ export default function Page() {
                   Approve
                 </button>
                 <button
+                  aria-pressed={selectedAction === "deny"}
                   className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
                     selectedAction === "deny"
                       ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
@@ -555,6 +564,7 @@ export default function Page() {
                   Deny
                 </button>
                 <button
+                  aria-pressed={selectedAction === "request_documents"}
                   className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
                     selectedAction === "request_documents"
                       ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"

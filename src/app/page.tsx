@@ -166,16 +166,16 @@ export default function Page() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const usesSeededScenario = seededApplication
-      ? applicantName.trim() === seededApplication.applicant &&
-        email.trim() === seededApplication.email &&
-        Number(loanAmount || 0) === seededApplication.loanAmount &&
-        Number(monthlyIncome || 0) === seededApplication.statedMonthlyIncome &&
-        employmentStatus === seededApplication.employmentStatus &&
-        haveSameDocuments(selectedDocuments, seededApplication.documents)
-      : false;
+    const usesSeededScenario =
+      seededApplication !== undefined &&
+      applicantName.trim() === seededApplication.applicant &&
+      email.trim() === seededApplication.email &&
+      Number(loanAmount || 0) === seededApplication.loanAmount &&
+      Number(monthlyIncome || 0) === seededApplication.statedMonthlyIncome &&
+      employmentStatus === seededApplication.employmentStatus &&
+      haveSameDocuments(selectedDocuments, seededApplication.documents);
 
-    if (usesSeededScenario) {
+    if (usesSeededScenario && seededApplication) {
       startTransition(() => {
         router.push(getApplicationRoute(seededApplication));
       });
@@ -263,12 +263,13 @@ export default function Page() {
 
                 return (
                   <button
-                    key={scenario.id}
+                    aria-pressed={isActive}
                     className={`rounded-[22px] border px-4 py-4 text-left transition ${
                       isActive
                         ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
                         : "border-[#e7dfd8] bg-white text-[#5f5a57] hover:border-[#cfdffc] hover:text-[#1d6ff2]"
                     }`}
+                    key={scenario.id}
                     onClick={() => applyScenario(scenario.id)}
                     type="button"
                   >
@@ -299,36 +300,39 @@ export default function Page() {
             </div>
 
             <div className="mt-8 grid gap-6 md:grid-cols-2">
-              <label className="block">
+              <label className="block" htmlFor="applicant-name">
                 <span className="text-sm font-medium text-[#8a847f]">
                   Applicant name
                 </span>
                 <input
                   className="mt-3 w-full rounded-[20px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base text-[#050505] outline-none transition focus:border-[#1d6ff2]"
+                  id="applicant-name"
                   onChange={(event) => setApplicantName(event.target.value)}
                   type="text"
                   value={applicantName}
                 />
               </label>
 
-              <label className="block">
+              <label className="block" htmlFor="applicant-email">
                 <span className="text-sm font-medium text-[#8a847f]">
                   Email
                 </span>
                 <input
                   className="mt-3 w-full rounded-[20px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base text-[#050505] outline-none transition focus:border-[#1d6ff2]"
+                  id="applicant-email"
                   onChange={(event) => setEmail(event.target.value)}
                   type="email"
                   value={email}
                 />
               </label>
 
-              <label className="block">
+              <label className="block" htmlFor="loan-amount">
                 <span className="text-sm font-medium text-[#8a847f]">
                   Loan amount
                 </span>
                 <input
                   className="mt-3 w-full rounded-[20px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base text-[#050505] outline-none transition focus:border-[#1d6ff2]"
+                  id="loan-amount"
                   min="0"
                   onChange={(event) => setLoanAmount(event.target.value)}
                   type="number"
@@ -336,12 +340,13 @@ export default function Page() {
                 />
               </label>
 
-              <label className="block">
+              <label className="block" htmlFor="monthly-income">
                 <span className="text-sm font-medium text-[#8a847f]">
                   Monthly income
                 </span>
                 <input
                   className="mt-3 w-full rounded-[20px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base text-[#050505] outline-none transition focus:border-[#1d6ff2]"
+                  id="monthly-income"
                   min="0"
                   onChange={(event) => setMonthlyIncome(event.target.value)}
                   type="number"
@@ -368,12 +373,13 @@ export default function Page() {
             </div>
 
             <div className="mt-8">
-              <label className="block">
+              <label className="block" htmlFor="employment-status">
                 <span className="text-sm font-medium text-[#8a847f]">
                   Employment status
                 </span>
                 <select
                   className="mt-3 w-full rounded-[20px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base text-[#050505] outline-none transition focus:border-[#1d6ff2]"
+                  id="employment-status"
                   onChange={(event) =>
                     setEmploymentStatus(event.target.value as EmploymentStatus)
                   }
@@ -403,6 +409,7 @@ export default function Page() {
 
                 return (
                   <button
+                    aria-pressed={isSelected}
                     key={document.fileName}
                     className="grid w-full gap-4 px-6 py-5 text-left transition hover:bg-[#fbf8f5] sm:grid-cols-[1fr_auto]"
                     onClick={() => toggleDocument(document.fileName)}
