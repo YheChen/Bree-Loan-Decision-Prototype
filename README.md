@@ -4,6 +4,8 @@
 
 This project is a front-end prototype for an AI-powered loan application processor take-home. It focuses on the product experience on top of a scoring engine, not the engine itself.
 
+Live demo: https://bree-loan-decision-prototype.vercel.app/
+
 The prototype includes:
 
 - applicant submission flow
