@@ -431,7 +431,7 @@ export default function Page() {
               })}
             </div>
 
-            <div className="mt-12 flex flex-col items-center gap-5 pt-4">
+            <div className="my-12 flex justify-center">
               <button
                 className="inline-flex min-w-[280px] items-center justify-center rounded-[20px] border-2 border-black bg-[#1d6ff2] px-8 py-4 text-xl font-medium text-white shadow-[10px_10px_0_#050505] transition hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[8px_8px_0_#050505] disabled:translate-x-0 disabled:translate-y-0 disabled:border-[#9bbef9] disabled:bg-[#9bbef9] disabled:shadow-none"
                 disabled={isPending}
@@ -443,7 +443,7 @@ export default function Page() {
           </section>
         </form>
 
-        <section className="mx-auto mt-12 max-w-[840px] border-t border-[#ece6e1] pt-10">
+        <section className="mx-auto max-w-[840px] border-t border-[#ece6e1] pt-10">
           <div className="flex items-end justify-between gap-6">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">

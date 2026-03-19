@@ -119,7 +119,7 @@ export default async function Page({
           {
             label: "Decision sent",
             detail: "Your outcome is now available.",
-            state: "current",
+            state: "complete",
           },
         ]}
       />
