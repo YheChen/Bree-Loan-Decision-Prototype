@@ -12,17 +12,17 @@ type StatusTrackerProps = {
 function getStepClasses(state: TrackerStep["state"]) {
   if (state === "complete") {
     return {
-      card: "border-[#d7e6ff] bg-[#f3f8ff]",
-      marker: "border-[#1d6ff2] bg-[#1d6ff2] text-white",
+      card: "border-[#ece6e1] bg-[#fbf8f5]",
+      marker: "border-[#050505] bg-[#050505] text-white",
       label: "text-[#050505]",
-      detail: "text-[#5f6d81]",
+      detail: "text-[#6f6a67]",
     };
   }
 
   if (state === "current") {
     return {
-      card: "border-[#1d6ff2] bg-white",
-      marker: "border-[#1d6ff2] bg-white text-[#1d6ff2]",
+      card: "border-[#050505] bg-white",
+      marker: "border-[#050505] bg-white text-[#050505]",
       label: "text-[#050505]",
       detail: "text-[#6f6a67]",
     };

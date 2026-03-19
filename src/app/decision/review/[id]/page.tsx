@@ -192,14 +192,14 @@ export default async function Page({
 
       <section className="border-t border-[#ece6e1] pt-10">
         <div className="grid gap-5 md:grid-cols-2">
-          <div className="rounded-[28px] border border-[#d7e6ff] bg-[#f3f8ff] px-6 py-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#456b9e]">
+          <div className="rounded-[28px] border border-[#ece6e1] bg-[#fbf8f5] px-6 py-6">
+            <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#8a847f]">
               Expected timeline
             </p>
             <p className="mt-3 text-3xl font-semibold text-[#050505]">
               Within 1 business day
             </p>
-            <p className="mt-3 text-base leading-7 text-[#5f6d81]">
+            <p className="mt-3 text-base leading-7 text-[#6f6a67]">
               Most flagged applications are resolved the same day, but we set a
               wider expectation to avoid overpromising.
             </p>
@@ -230,7 +230,6 @@ export default async function Page({
               Review in progress
             </h2>
           </div>
-          <div className="hidden h-[3px] w-32 bg-[#1d6ff2] sm:block" />
         </div>
 
         <div className="mt-8 divide-y divide-[#ece6e1] border-y border-[#ece6e1]">

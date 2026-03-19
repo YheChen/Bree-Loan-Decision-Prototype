@@ -84,7 +84,7 @@ function getActionTone(action: ReviewerAction | undefined) {
   }
 
   if (action === "request_documents") {
-    return "border-[#d7e6ff] bg-[#f3f8ff] text-[#456b9e]";
+    return "border-[#eadfcd] bg-[#f8f1e8] text-[#7f674f]";
   }
 
   return "border-[#ece6e1] bg-[#fbf8f5] text-[#6f6a67]";
@@ -169,7 +169,7 @@ export default function Page() {
           </Link>
 
           <header className="mt-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d6ff2]">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8a847f]">
               Admin review queue
             </p>
             <h1 className="mt-5 text-4xl font-semibold tracking-tight text-[#050505] sm:text-5xl">
@@ -196,14 +196,14 @@ export default function Page() {
               </p>
             </div>
 
-            <div className="rounded-[28px] border border-[#d7e6ff] bg-[#f3f8ff] px-6 py-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#456b9e]">
+            <div className="rounded-[28px] border border-[#ece6e1] bg-[#fbf8f5] px-6 py-6">
+              <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#8a847f]">
                 Ready for review
               </p>
               <p className="mt-3 text-4xl font-semibold text-[#050505]">
                 {readyForReviewCount}
               </p>
-              <p className="mt-2 text-sm leading-6 text-[#5f6d81]">
+              <p className="mt-2 text-sm leading-6 text-[#6f6a67]">
                 These files have enough supporting data for an immediate human
                 decision.
               </p>
@@ -247,8 +247,8 @@ export default function Page() {
                     <button
                       className={`w-full rounded-[24px] border px-4 py-4 text-left transition ${
                         isSelected
-                          ? "border-[#1d6ff2] bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)]"
-                          : "border-[#ece6e1] bg-white hover:border-[#d7e6ff]"
+                          ? "border-[#050505] bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)]"
+                          : "border-[#ece6e1] bg-white hover:border-[#d7d0ca]"
                       }`}
                       key={application.id}
                       onClick={() => setSelectedId(application.id)}
@@ -268,7 +268,7 @@ export default function Page() {
                         </span>
                       </div>
 
-                      <p className="mt-4 text-sm font-medium text-[#1d6ff2]">
+                      <p className="mt-4 text-sm font-medium text-[#6f6a67]">
                         {getFocusLabel(application)}
                       </p>
 
@@ -286,7 +286,7 @@ export default function Page() {
               <section className="rounded-[32px] border border-[#ece6e1] bg-white px-6 py-6">
                 <div className="flex flex-col gap-4 border-b border-[#ece6e1] pb-6 sm:flex-row sm:items-start sm:justify-between">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#1d6ff2]">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
                       Selected file
                     </p>
                     <h2 className="mt-3 text-3xl font-semibold text-[#050505]">
@@ -329,8 +329,8 @@ export default function Page() {
                       {selectedApplication.employmentStatus}
                     </p>
                   </div>
-                  <div className="rounded-[24px] border border-[#d7e6ff] bg-[#f3f8ff] px-5 py-5">
-                    <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#456b9e]">
+                  <div className="rounded-[24px] border border-[#ece6e1] bg-[#fbf8f5] px-5 py-5">
+                    <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#8a847f]">
                       Mock score
                     </p>
                     <p className="mt-3 text-2xl font-semibold text-[#050505]">
@@ -444,8 +444,8 @@ export default function Page() {
                       <button
                         className={`rounded-[20px] border px-4 py-3 text-left text-base font-semibold transition ${
                           selectedAction === "approve"
-                            ? "border-[#1d6ff2] bg-[#f3f8ff] text-[#1d6ff2]"
-                            : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#d7e6ff]"
+                            ? "border-[#050505] bg-white text-[#050505]"
+                            : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#d7d0ca]"
                         }`}
                         onClick={() => setReviewerAction("approve")}
                         type="button"
@@ -455,8 +455,8 @@ export default function Page() {
                       <button
                         className={`rounded-[20px] border px-4 py-3 text-left text-base font-semibold transition ${
                           selectedAction === "deny"
-                            ? "border-[#1d6ff2] bg-[#f3f8ff] text-[#1d6ff2]"
-                            : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#d7e6ff]"
+                            ? "border-[#050505] bg-white text-[#050505]"
+                            : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#d7d0ca]"
                         }`}
                         onClick={() => setReviewerAction("deny")}
                         type="button"
@@ -466,8 +466,8 @@ export default function Page() {
                       <button
                         className={`rounded-[20px] border px-4 py-3 text-left text-base font-semibold transition ${
                           selectedAction === "request_documents"
-                            ? "border-[#1d6ff2] bg-[#f3f8ff] text-[#1d6ff2]"
-                            : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#d7e6ff]"
+                            ? "border-[#050505] bg-white text-[#050505]"
+                            : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#d7d0ca]"
                         }`}
                         onClick={() => setReviewerAction("request_documents")}
                         type="button"
@@ -485,7 +485,7 @@ export default function Page() {
 
                       {selectedAction === "request_documents" ? (
                         <Link
-                          className="mt-4 inline-flex items-center text-sm font-semibold text-[#1d6ff2] transition hover:text-[#0f56c6]"
+                          className="mt-4 inline-flex items-center text-sm font-semibold text-[#050505] transition hover:text-[#6f6a67]"
                           href={`/reupload/${selectedApplication.id}`}
                         >
                           Open applicant re-upload flow →
@@ -509,7 +509,7 @@ export default function Page() {
                 </p>
 
                 <textarea
-                  className="mt-6 min-h-[180px] w-full rounded-[24px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base leading-7 text-[#050505] outline-none transition focus:border-[#1d6ff2]"
+                  className="mt-6 min-h-[180px] w-full rounded-[24px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base leading-7 text-[#050505] outline-none transition focus:border-[#050505]"
                   onChange={(event) => updateNotes(event.target.value)}
                   placeholder="Add reviewer context, follow-up items, or the rationale for your decision."
                   value={selectedNote}

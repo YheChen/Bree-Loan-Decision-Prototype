@@ -309,7 +309,7 @@ export default function Page() {
               preview.tone === "approved"
                 ? "border-[#dcebdd] bg-[#f4fbf5]"
                 : preview.tone === "review"
-                  ? "border-[#d7e6ff] bg-[#f3f8ff]"
+                  ? "border-[#ece6e1] bg-[#fbf8f5]"
                   : "border-[#f0dfd7] bg-[#fff7f2]"
             }`}
           >
@@ -336,7 +336,6 @@ export default function Page() {
               Ready for a quick document fix
             </h2>
           </div>
-          <div className="hidden h-[3px] w-32 bg-[#1d6ff2] sm:block" />
         </div>
 
         <div className="mt-8 divide-y divide-[#ece6e1] border-y border-[#ece6e1]">
@@ -393,15 +392,15 @@ export default function Page() {
                 <label
                   className={`cursor-pointer rounded-[24px] border px-5 py-5 transition ${
                     isSelected
-                      ? "border-[#1d6ff2] bg-[#f3f8ff]"
-                      : "border-[#ece6e1] bg-[#fbf8f5] hover:border-[#d7e6ff]"
+                      ? "border-[#050505] bg-white shadow-[0_1px_0_rgba(15,23,42,0.04)]"
+                      : "border-[#ece6e1] bg-[#fbf8f5] hover:border-[#d7d0ca]"
                   }`}
                   key={document.fileName}
                 >
                   <div className="flex items-start gap-4">
                     <input
                       checked={isSelected}
-                      className="mt-1 h-5 w-5 rounded border-[#d7d0ca] text-[#1d6ff2] focus:ring-[#1d6ff2]"
+                      className="mt-1 h-5 w-5 rounded border-[#d7d0ca] accent-[#050505] focus:ring-[#050505]"
                       onChange={() => toggleDocument(document.fileName)}
                       type="checkbox"
                     />

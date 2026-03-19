@@ -183,7 +183,6 @@ export default async function Page({
               Ready to move forward
             </h2>
           </div>
-          <div className="hidden h-[3px] w-32 bg-[#1d6ff2] sm:block" />
         </div>
 
         <div className="mt-8 divide-y divide-[#ece6e1] border-y border-[#ece6e1]">

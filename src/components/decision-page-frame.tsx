@@ -37,7 +37,7 @@ export function DecisionPageFrame({
           </Link>
 
           <header className="mt-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1d6ff2]">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8a847f]">
               {eyebrow}
             </p>
             <h1 className="mt-5 text-4xl font-semibold tracking-tight text-[#050505] sm:text-5xl">
