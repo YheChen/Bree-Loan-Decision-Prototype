@@ -254,7 +254,7 @@ export default function Page() {
       actions={
         <>
           <Link
-            className={getDecisionButtonClasses("secondary")}
+            className={getDecisionButtonClasses("primary")}
             href={`/decision/review/${application.id}${preservedSearch}`}
           >
             Back to status

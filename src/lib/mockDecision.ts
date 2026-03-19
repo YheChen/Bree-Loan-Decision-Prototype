@@ -291,11 +291,7 @@ export function getApplicationRoute(
   const search = options?.search ? `?${options.search}` : "";
 
   if (application.extractionError === "no_documents_provided") {
-    const customRoute = isCustom
-      ? `/decision/review/${application.id}`
-      : `/reupload/${application.id}`;
-
-    return `${customRoute}${search}`;
+    return `/decision/review/${application.id}${search}`;
   }
 
   if (application.decision === "approved") {

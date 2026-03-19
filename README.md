@@ -42,8 +42,10 @@ Then open `http://localhost:3000`.
   Denied state for Bob Smith
 - `/decision/review/app-003`
   Manual review state for Bob Smith
+- `/decision/review/app-005`
+  Missing-documents status state for Carol Tester
 - `/reupload/app-005`
-  Missing-documents edge case for Carol Tester
+  Document re-upload flow for the missing-documents edge case
 - `/admin/reviews`
   Admin review dashboard for flagged applications
 
@@ -51,8 +53,9 @@ Then open `http://localhost:3000`.
 
 - The denial experience is intentionally high level and compliance-safe. It does not expose factor-level reasons or numerical scores to the applicant.
 - The review state emphasizes reassurance and clarity instead of fake precision. It uses a lightweight status tracker and a conservative timeline, not a countdown timer.
-- The missing-documents edge case was chosen because it is common, recoverable, and a strong example of reducing user frustration without making applicants restart.
+- The missing-documents edge case was chosen because it is common, recoverable, and a strong example of reducing user frustration without making applicants restart. In the current flow, applicants first land on a status page and then move into re-upload only when action is needed.
 - The admin dashboard is designed for quick triage. Reviewers can scan the queue, inspect score breakdowns, read submitted documents, leave notes, and take a next-step action in one place.
+- For demo clarity, the flagged queue includes both review-ready files and applicant-action holds. In production, I would likely separate missing-document cases into a dedicated `waiting on applicant` bucket instead of mixing them into the main reviewer queue.
 - The home page supports both seeded demo paths and custom inputs so the prototype can show the required scenarios while still feeling interactive.
 
 ## Tradeoffs
@@ -65,12 +68,12 @@ Then open `http://localhost:3000`.
   - `D` applicant appeal flow
   - `E` batch approve/deny
 - I treated feature `A` as a lightweight status tracker rather than a literal real-time countdown, because a countdown would create false precision and reduce trust in a variable review process.
-- The queue ordering is still static mock order for simplicity. In a production system, I would prioritize by reviewer efficiency and applicant impact.
+- The admin queue uses a lightweight priority sort: missing documents first, near-threshold review cases next, and lower-dollar ambiguous files after that. I would validate and tune that heuristic with ops data before using it in production.
 - Reviewer actions and notes are local UI state only. They are meant to demonstrate workflow, not persistence.
 
 ## What I’d Improve With More Time
 
-- add smarter queue prioritization and sorting
+- split applicant-action holds into a dedicated queue instead of showing them beside review-ready files
 - add pre-submission document validation to reduce manual review volume
 - design a proper reconsideration or updated-documents path for denied applicants
 - improve mobile polish on the admin dashboard
