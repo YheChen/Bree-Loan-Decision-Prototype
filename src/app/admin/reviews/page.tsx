@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 
 import { getFlaggedApplications } from "@/lib/getFlaggedApplications";
@@ -139,7 +139,9 @@ function SummaryCard({
       >
         {title}
       </p>
-      <p className="mt-3 text-4xl font-semibold text-[#050505]">{value}</p>
+      <p className="mt-3 text-2xl font-semibold text-[#050505] sm:text-3xl">
+        {value}
+      </p>
       {description ? (
         <p
           className={`mt-2 text-sm leading-6 ${
@@ -153,14 +155,44 @@ function SummaryCard({
   );
 }
 
+function DetailRow({
+  label,
+  value,
+  accent = false,
+}: {
+  label: string;
+  value: string;
+  accent?: boolean;
+}) {
+  return (
+    <div className="grid items-center gap-3 py-5 sm:grid-cols-[220px_1fr]">
+      <p className="text-lg font-medium text-[#98928d]">{label}</p>
+      <p
+        className={`text-right text-xl font-semibold sm:text-2xl ${
+          accent ? "text-[#1d6ff2]" : "text-[#050505]"
+        }`}
+      >
+        {value}
+      </p>
+    </div>
+  );
+}
+
 export default function Page() {
-  const [selectedId, setSelectedId] = useState(flaggedApplications[0]?.id ?? "");
-  const [notesById, setNotesById] = useState<Record<string, string>>(initialNotes);
+  const queueScrollRef = useRef<HTMLDivElement>(null);
+  const [selectedId, setSelectedId] = useState(
+    flaggedApplications[0]?.id ?? "",
+  );
+  const [notesById, setNotesById] =
+    useState<Record<string, string>>(initialNotes);
   const [actionsById, setActionsById] = useState<
     Partial<Record<string, ReviewerAction>>
   >({});
 
-  const selectedApplication = getSelectedApplication(selectedId, flaggedApplications);
+  const selectedApplication = getSelectedApplication(
+    selectedId,
+    flaggedApplications,
+  );
 
   if (!selectedApplication) {
     return (
@@ -200,6 +232,13 @@ export default function Page() {
     }));
   }
 
+  function scrollQueue(direction: "left" | "right") {
+    queueScrollRef.current?.scrollBy({
+      left: direction === "left" ? -320 : 320,
+      behavior: "smooth",
+    });
+  }
+
   return (
     <main className="min-h-screen bg-[#fbf4f1] px-0 py-0 text-[#0c0c0c] sm:px-6 sm:py-10 lg:px-8 lg:py-14">
       <div className="mx-auto w-full rounded-none bg-white px-5 py-8 shadow-[0_1px_0_rgba(15,23,42,0.05)] sm:rounded-[40px] sm:px-10 sm:py-12 lg:w-1/2 lg:px-12">
@@ -235,7 +274,6 @@ export default function Page() {
                 value={flaggedApplications.length}
               />
               <SummaryCard
-                accent
                 description="These files have enough supporting data for an immediate human decision."
                 title="Ready for review"
                 value={readyForReviewCount}
@@ -263,8 +301,18 @@ export default function Page() {
               </span>
             </div>
 
-            <div className="mt-6 overflow-x-auto pb-2">
-              <div className="flex min-w-max gap-3">
+            <div className="mt-6 flex items-center gap-3">
+              <button
+                aria-label="Scroll review queue left"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7dfd8] bg-[#fbf8f5] text-base font-semibold text-[#050505] transition hover:bg-[#f4efeb]"
+                onClick={() => scrollQueue("left")}
+                type="button"
+              >
+                &lt;
+              </button>
+
+              <div className="overflow-x-auto pb-2" ref={queueScrollRef}>
+                <div className="flex min-w-max gap-3">
                 {flaggedApplications.map((application) => {
                   const isSelected = application.id === selectedApplication.id;
                   const action = actionsById[application.id];
@@ -321,7 +369,17 @@ export default function Page() {
                     </button>
                   );
                 })}
+                </div>
               </div>
+
+              <button
+                aria-label="Scroll review queue right"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#e7dfd8] bg-[#fbf8f5] text-base font-semibold text-[#050505] transition hover:bg-[#f4efeb]"
+                onClick={() => scrollQueue("right")}
+                type="button"
+              >
+                &gt;
+              </button>
             </div>
           </section>
 
@@ -346,26 +404,26 @@ export default function Page() {
               </div>
             </div>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <SummaryCard
-                title="Requested amount"
+            <div className="mt-6 divide-y divide-[#ece6e1] border-y border-[#ece6e1]">
+              <DetailRow
+                label="Requested amount"
                 value={formatCurrency(selectedApplication.loanAmount)}
               />
-              <SummaryCard
-                title="Monthly income"
+              <DetailRow
+                label="Monthly income"
                 value={formatCurrency(selectedApplication.statedMonthlyIncome)}
               />
-              <SummaryCard
-                title="Employment"
+              <DetailRow
+                label="Employment"
                 value={
                   selectedApplication.employmentStatus === "self-employed"
                     ? "Self-employed"
                     : "Employed"
                 }
               />
-              <SummaryCard
+              <DetailRow
                 accent
-                title="Mock score"
+                label="Mock score"
                 value={`${selectedApplication.score} / 100`}
               />
             </div>
@@ -454,86 +512,71 @@ export default function Page() {
 
           <section className="mt-6 rounded-[32px] border border-[#ece6e1] bg-white px-6 py-6">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
-              Reviewer action
+              Reviewer notes
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-[#050505]">
-              Choose the next step and add notes
+              Add notes and choose the next step
             </h2>
 
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
-              <button
-                className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
-                  selectedAction === "approve"
-                    ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
-                    : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#cfdffc]"
-                }`}
-                onClick={() => setReviewerAction("approve")}
-                type="button"
-              >
-                Approve
-              </button>
-              <button
-                className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
-                  selectedAction === "deny"
-                    ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
-                    : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#cfdffc]"
-                }`}
-                onClick={() => setReviewerAction("deny")}
-                type="button"
-              >
-                Deny
-              </button>
-              <button
-                className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
-                  selectedAction === "request_documents"
-                    ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
-                    : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#cfdffc]"
-                }`}
-                onClick={() => setReviewerAction("request_documents")}
-                type="button"
-              >
-                Request documents
-              </button>
-            </div>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-[#6f6a67]">
+              Notes are intentionally lightweight here. The goal is to help
+              reviewers preserve context without slowing down the queue.
+            </p>
 
-            <div className="mt-6 rounded-[24px] border border-[#ece6e1] bg-[#fbf8f5] px-5 py-5">
-              <p className="text-sm leading-6 text-[#6f6a67]">
-                Actions are local to this prototype. They do not persist, but
-                they demonstrate the intended reviewer workflow.
-              </p>
+            <textarea
+              className="mt-6 min-h-[180px] w-full rounded-[24px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base leading-7 text-[#050505] outline-none transition focus:border-[#1d6ff2]"
+              onChange={(event) => updateNotes(event.target.value)}
+              placeholder="Add reviewer context, follow-up items, or the rationale for your decision."
+              value={selectedNote}
+            />
 
-              {selectedAction === "request_documents" ? (
-                <Link
-                  className="mt-4 inline-flex items-center text-sm font-semibold text-[#050505] transition hover:text-[#6f6a67]"
-                  href={`/reupload/${selectedApplication.id}`}
-                >
-                  Open applicant re-upload flow →
-                </Link>
-              ) : null}
+            <div className="mt-4 flex flex-col gap-3 text-sm text-[#6f6a67] sm:flex-row sm:items-center sm:justify-between">
+              <p>Saved locally for demo purposes.</p>
+              <p>{selectedNote.trim().length} characters</p>
             </div>
 
             <div className="mt-8 border-t border-[#ece6e1] pt-8">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#8a847f]">
-                Reviewer notes
+                Reviewer action
               </p>
               <h3 className="mt-2 text-2xl font-semibold text-[#050505]">
-                Internal notes for this file
+                Select next steps
               </h3>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-[#6f6a67]">
-                Notes are intentionally lightweight here. The goal is to help
-                reviewers preserve context without slowing down the queue.
-              </p>
 
-                <textarea
-                className="mt-6 min-h-[180px] w-full rounded-[24px] border border-[#e7dfd8] bg-[#fbf8f5] px-5 py-4 text-base leading-7 text-[#050505] outline-none transition focus:border-[#1d6ff2]"
-                onChange={(event) => updateNotes(event.target.value)}
-                placeholder="Add reviewer context, follow-up items, or the rationale for your decision."
-                value={selectedNote}
-              />
-
-              <div className="mt-4 flex flex-col gap-3 text-sm text-[#6f6a67] sm:flex-row sm:items-center sm:justify-between">
-                <p>Saved locally for demo purposes.</p>
-                <p>{selectedNote.trim().length} characters</p>
+              <div className="mt-6 grid gap-3 md:grid-cols-3">
+                <button
+                  className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
+                    selectedAction === "approve"
+                      ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
+                      : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#cfdffc]"
+                  }`}
+                  onClick={() => setReviewerAction("approve")}
+                  type="button"
+                >
+                  Approve
+                </button>
+                <button
+                  className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
+                    selectedAction === "deny"
+                      ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
+                      : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#cfdffc]"
+                  }`}
+                  onClick={() => setReviewerAction("deny")}
+                  type="button"
+                >
+                  Deny
+                </button>
+                <button
+                  className={`rounded-[20px] border px-4 py-3 text-center text-base font-semibold transition ${
+                    selectedAction === "request_documents"
+                      ? "border-[#1d6ff2] bg-white text-[#1d6ff2]"
+                      : "border-[#ece6e1] bg-[#fbf8f5] text-[#050505] hover:border-[#cfdffc]"
+                  }`}
+                  onClick={() => setReviewerAction("request_documents")}
+                  type="button"
+                >
+                  Request documents
+                </button>
               </div>
             </div>
           </section>
